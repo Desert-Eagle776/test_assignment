@@ -1,0 +1,53 @@
+<div class="block">
+  <div class="content hidden">
+    {{#each users}}
+    <img src={{this.photo}} alt="photo">
+    <p>NAME: {{this.name}}</p>
+    <p>POSITION: {{this.position}}</p>
+    <p>EMAIL: {{this.email}}</p>
+    <p>PHONE: {{this.phone}}</p>
+    {{/each}}
+
+    {{#if links.prev_link}}
+    <a href="{{links.prev_link}}">Попередня сторінка</a>
+    {{else}}
+    <span class="grey_text">Попередня сторінка</span>
+    {{/if}}
+
+    {{#if links.next_link}}
+    <a href="{{links.next_link}}">Наступна сторінка</a>
+    {{else}}
+    <span class="grey_text">Наступна сторінка</span>
+    {{/if}}
+  </div>
+
+  <button type="button" id="btn">Show more</button>
+</div>
+
+<style>
+  .hidden {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .grey_text {
+    color: grey;
+  }
+</style>
+
+<script>
+  const showMoreBtn = document.querySelector('#btn');
+  showMoreBtn.addEventListener('click', (event) => {
+    const content = document.querySelector('.content');
+    if (content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      content.classList.add('show');
+    } else {
+      content.classList.remove('show');
+      content.classList.add('hidden');
+    }
+  });
+</script>

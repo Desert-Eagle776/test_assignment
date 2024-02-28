@@ -1,0 +1,68 @@
+<div class="block">
+  <p class="err_message"></p>
+
+  <form action="#" method="post" enctype="multipart/form-data" id="registrationForm">
+    <input type="text" name="name" placeholder="Enter your name...">
+    <input type="email" name="email" placeholder="Enter your email...">
+    <input type="tel" name="phone" placeholder="Enter your phone number...">
+
+    <select name="position_id" id="">
+      {{#each positions}}
+      <option value={{this.id}}>{{this.name}}</option>
+      {{/each}}
+    </select>
+
+    <input type="file" name="photo">
+
+    <button type="submit">Registration</button>
+  </form>
+</div>
+
+<script>
+  // Отримання токена
+  fetch('/token')
+    .then(response => response.json())
+    .then(data => {
+      const token = data.token;
+
+      // Зберігання токена
+      sessionStorage.setItem('registrationToken', token);
+    });
+
+  // Відправлення форми реєстрації
+  const form = document.querySelector('#registrationForm');
+  const errPara = document.querySelector('.err_message');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const token = sessionStorage.getItem('registrationToken');
+    const formData = new FormData(form);
+
+    fetch('/users/register', {
+      method: 'POST',
+      headers: {
+        'Token': `${token}`
+      },
+      body: formData
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Processing the server response
+        if (!data.ok) {
+          let errorMessage = '';
+          for (let field in data.fails) {
+            errorMessage += `${field}: ${data.fails[field].join(', ')}\n`;
+          }
+          errPara.textContent = errorMessage; // If the request is unsuccessful, we display the error in the tag
+        } else {
+          errPara.textContent = data.message;
+        }
+
+        if (data.success) {
+          // If the request is successful, we redirect to a new page
+          window.location.href = '/users/?page=1&count=5';
+        }
+      });
+  });
+
+</script>
